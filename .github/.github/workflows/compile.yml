@@ -1,0 +1,30 @@
+name: Compile MQ4
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Download MT4
+      run: |
+        curl -L -o mt4setup.exe https://download.mql5.com/cdn/web/metaquotes.software.corp/mt4/mt4setup.exe
+
+    - name: Install MT4 silently
+      run: |
+        mt4setup.exe /silent
+
+    - name: Compile MQ4
+      run: |
+        "C:\Program Files\MetaTrader 4\metaeditor.exe" /compile:RTM_Signal_Final.mq4
+
+    - name: Upload compiled EX4
+      uses: actions/upload-artifact@v4
+      with:
+        name: compiled-ex4
+        path: RTM_Signal_Final.ex4
